@@ -136,12 +136,17 @@ check_status
 
 echo "La interfaz tap0 ha sido añadida al bridge br-lan."
 
+# Parte 7: Añadir el reinicio de DDNS en /etc/rc.local antes de exit 0
+
+sed -i '/exit 0/i /etc/init.d/ddns restart' /etc/rc.local
+check_status
+
+echo "Se ha configurado el reinicio de DDNS en /etc/rc.local."
+
 # Mensaje de éxito final
 echo "Servidor configurado con éxito."
 
-# Parte 7: Reiniciar el dispositivo
-
-# Informar que el dispositivo se reiniciará en 5 segundos
+# Informar que el dispositivo se va a reiniciar en 5 segundos
 echo "El dispositivo se reiniciará en 5 segundos..."
 
 # Esperar 5 segundos
@@ -149,4 +154,3 @@ sleep 5
 
 # Reiniciar el dispositivo
 reboot
-
