@@ -92,10 +92,18 @@ check_status
 
 echo "Archivo de configuración /etc/config/openvpn generado con éxito."
 
-# Parte 4: Extraer el valor DDNS del archivo /etc/config/ddns
+# Parte 4: Extraer el valor DDNS del archivo /etc/config/ddns si existe
 
-DDNS=$(awk -F"'" '/option lookup_host/ {print $2}' /etc/config/ddns)
-check_status
+DDNS=""
+DDNS_CONFIGURED=false
+
+if [ -f /etc/config/ddns ]; then
+    DDNS=$(awk -F"'" '/option lookup_host/ {print $2}' /etc/config/ddns)
+    check_status
+    DDNS_CONFIGURED=true
+else
+    echo "DDNS no instalado, recuerda modificar manualmente el archivo client.ovpn con la dirección correcta."
+fi
 
 # Parte 5: Generación del archivo client.ovpn
 
@@ -103,7 +111,7 @@ cat > /etc/openvpn/client.ovpn <<EOF
 client
 dev tap
 proto udp
-remote $DDNS 1194
+remote ${DDNS:-"DDNS_AQUI"} 1194
 resolv-retry infinite
 nobind
 float
@@ -129,22 +137,21 @@ echo "Archivo de configuración client.ovpn generado con éxito."
 
 # Parte 6: Añadir la interfaz tap0 al bridge br-lan
 
-# Buscar la línea 'option name 'br-lan'' y agregar 'list ports 'tap0'' justo debajo
 echo "Añadiendo tap0 al bridge br-lan..."
 sed -i "/option name 'br-lan'/a \ \ \ \ list ports 'tap0'" /etc/config/network
 check_status
 
 echo "La interfaz tap0 ha sido añadida al bridge br-lan."
 
-# Parte 7: Añadir el reinicio de DDNS en /etc/rc.local antes de exit 0
-
-sed -i '/exit 0/i /etc/init.d/ddns restart' /etc/rc.local
-check_status
-
-echo "Se ha configurado el reinicio de DDNS en /etc/rc.local."
+# Parte 7: Añadir el reinicio de DDNS en /etc/rc.local antes de exit 0, solo si DDNS está configurado
+if $DDNS_CONFIGURED; then
+    sed -i '/exit 0/i /etc/init.d/ddns restart' /etc/rc.local
+    check_status
+    echo "Se ha configurado el reinicio de DDNS en /etc/rc.local."
+fi
 
 # Mensaje de éxito final
-echo "Servidor configurado con éxito."
+echo "Servidor configurado con éxito. El archivo client.ovpn está disponible en /etc/openvpn/."
 
 # Informar que el dispositivo se va a reiniciar en 5 segundos
 echo "El dispositivo se reiniciará en 5 segundos..."
