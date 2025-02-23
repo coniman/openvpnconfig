@@ -3,7 +3,7 @@
 # Función para verificar si el comando se ejecutó correctamente
 check_status() {
     if [ $? -ne 0 ]; then
-        echo "- Error configurando el servidor"
+        echo -e "\033[31m- Ha ocurrido un error\033[0m"
         exit 1
     fi
 }
@@ -102,7 +102,7 @@ if [ -f /etc/config/ddns ]; then
     check_status
     DDNS_CONFIGURED=true
 else
-    echo -e "\033[31m- DDNS no instalado, recuerda modificar manualmente el archivo client.ovpn con la dirección correcta.\033[0m"
+    echo -e "\033[33m- DDNS no instalado, recuerda modificar manualmente el archivo client.ovpn con la dirección correcta.\033[0m"
 fi
 
 # Parte 5: Generación del archivo client.ovpn
@@ -155,7 +155,7 @@ echo -e "\033[32m- El archivo client.ovpn está disponible en /etc/openvpn/\033[
 echo -e "\033[32m- Servidor configurado con éxito.\033[0m"
 
 # Informar que el dispositivo se va a reiniciar en 5 segundos
-echo -e "\033[32m- El dispositivo se reiniciará en 5 segundos...\033[0m"
+echo "- El dispositivo se reiniciará en 5 segundos..."
 
 # Esperar 5 segundos
 sleep 5
