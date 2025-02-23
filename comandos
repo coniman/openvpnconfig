@@ -1,0 +1,2 @@
+Comandos server: wget -O /tmp/server.sh https://raw.githubusercontent.com/coniman/openvpnconfig/refs/heads/main/server.sh; chmod +x /tmp/server.sh; /tmp/server.sh
+Comandos client: wget -O /tmp/client.sh https://raw.githubusercontent.com/coniman/openvpnconfig/refs/heads/main/client.sh; chmod +x /tmp/client.sh; /tmp/client.sh
