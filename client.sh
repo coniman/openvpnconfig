@@ -63,3 +63,12 @@ echo -e "\033[32m- La opción igmp_snooping '1' ha sido añadida correctamente a
 /etc/init.d/network restart
 check_status
 echo -e "\033[32m- Los cambios de red se han reiniciado correctamente.\033[0m"
+
+# Informar que el dispositivo se va a reiniciar en 5 segundos
+echo "- El dispositivo se reiniciará en 5 segundos..."
+
+# Esperar 5 segundos
+sleep 5
+
+# Reiniciar el dispositivo
+reboot
