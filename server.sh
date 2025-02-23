@@ -3,7 +3,7 @@
 # Función para verificar si el comando se ejecutó correctamente
 check_status() {
     if [ $? -ne 0 ]; then
-        echo "Error configurando el servidor"
+        echo "- Error configurando el servidor"
         exit 1
     fi
 }
@@ -19,10 +19,10 @@ opkg install openvpn-easy-rsa openvpn-openssl luci-app-openvpn nano
 check_status
 
 # Verificar la instalación
-echo "Paquetes instalados:"
+echo "- Paquetes instalados:"
 opkg list-installed | grep -E 'openvpn-easy-rsa|openvpn-openssl|luci-app-openvpn|nano'
 
-echo "Instalación completada."
+echo -e "\033[32m- Instalación completada.\033[0m"
 
 # Acceder al directorio de easy-rsa
 cd /etc/easy-rsa
@@ -62,7 +62,7 @@ cp /etc/easy-rsa/pki/issued/server.crt /etc/openvpn/
 cp /etc/easy-rsa/pki/dh.pem /etc/openvpn/
 check_status
 
-echo "Archivos de configuración copiados con éxito."
+echo -e "\033[32m- Archivos de configuración copiados con éxito.\033[0m"
 
 # Parte 3: Generación del archivo /etc/config/openvpn
 
@@ -90,7 +90,7 @@ config openvpn 'VPN_Tap_Server'
 EOF
 check_status
 
-echo "Archivo de configuración /etc/config/openvpn generado con éxito."
+echo -e "\033[32m- Archivo de configuración /etc/config/openvpn generado con éxito.\033[0m"
 
 # Parte 4: Extraer el valor DDNS del archivo /etc/config/ddns si existe
 
@@ -102,7 +102,7 @@ if [ -f /etc/config/ddns ]; then
     check_status
     DDNS_CONFIGURED=true
 else
-    echo "DDNS no instalado, recuerda modificar manualmente el archivo client.ovpn con la dirección correcta."
+    echo -e "\033[31m- DDNS no instalado, recuerda modificar manualmente el archivo client.ovpn con la dirección correcta.\033[0m"
 fi
 
 # Parte 5: Generación del archivo client.ovpn
@@ -133,28 +133,29 @@ $(cat /etc/easy-rsa/pki/private/client.key)
 EOF
 check_status
 
-echo "Archivo de configuración client.ovpn generado con éxito."
+echo -e "\033[32m- Archivo de configuración client.ovpn generado con éxito.\033[0m"
 
 # Parte 6: Añadir la interfaz tap0 al bridge br-lan
 
-echo "Añadiendo tap0 al bridge br-lan..."
+echo -e "\033[32m- Añadiendo tap0 al bridge br-lan...\033[0m"
 sed -i "/option name 'br-lan'/a \ \ \ \ list ports 'tap0'" /etc/config/network
 check_status
 
-echo "La interfaz tap0 ha sido añadida al bridge br-lan."
+echo -e "\033[32m- La interfaz tap0 ha sido añadida al bridge br-lan.\033[0m"
 
 # Parte 7: Añadir el reinicio de DDNS en /etc/rc.local antes de exit 0, solo si DDNS está configurado
 if $DDNS_CONFIGURED; then
     sed -i '/exit 0/i /etc/init.d/ddns restart' /etc/rc.local
     check_status
-    echo "Se ha configurado el reinicio de DDNS en /etc/rc.local."
+    echo -e "\033[32m- Se ha configurado el reinicio de DDNS en /etc/rc.local.\033[0m"
 fi
 
-# Mensaje de éxito final
-echo "Servidor configurado con éxito. El archivo client.ovpn está disponible en /etc/openvpn/."
+# Mensaje de éxito final con salto de línea
+echo -e "\033[32m- El archivo client.ovpn está disponible en /etc/openvpn/\033[0m"
+echo -e "\033[32m- Servidor configurado con éxito.\033[0m"
 
 # Informar que el dispositivo se va a reiniciar en 5 segundos
-echo "El dispositivo se reiniciará en 5 segundos..."
+echo -e "\033[32m- El dispositivo se reiniciará en 5 segundos...\033[0m"
 
 # Esperar 5 segundos
 sleep 5
