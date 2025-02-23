@@ -138,10 +138,10 @@ echo -e "\033[32m- Archivo de configuración client.ovpn generado con éxito.\03
 # Parte 6: Añadir la interfaz tap0 al bridge br-lan
 
 echo -e "\033[32m- Añadiendo tap0 al bridge br-lan...\033[0m"
-sed -i "/option name 'br-lan'/a \ \ \ \ list ports 'tap0'" /etc/config/network
+sed -i "/option name 'br-lan'/a \ \ \ \ list ports 'tap0'\n    option igmp_snooping '1'" /etc/config/network
 check_status
 
-echo -e "\033[32m- La interfaz tap0 ha sido añadida al bridge br-lan.\033[0m"
+echo -e "\033[32m- La interfaz tap0 ha sido añadida al bridge br-lan y se ha activado el IGMP snooping.\033[0m"
 
 # Parte 7: Añadir el reinicio de DDNS en /etc/rc.local antes de exit 0, solo si DDNS está configurado
 if $DDNS_CONFIGURED; then
