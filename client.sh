@@ -48,7 +48,7 @@ check_status
 echo -e "\033[32m- Los cambios de red han sido aplicados correctamente.\033[0m"
 
 # Añadir la configuración del bridge y la interfaz vpn directamente al final del archivo /etc/config/network
-echo -e "\nconfig device\n    option type 'bridge'\n    option name 'br-vpn'\n    list ports 'wan'\n    list ports 'tap0'\n    option ipv6 '0'\n    option igmp_snooping '1'\n" >> /etc/config/network
+echo -e "\nconfig device\n    option type 'bridge'\n    option name 'br-vpn'\n    list ports 'eth0.2'\n    list ports 'tap0'\n    option ipv6 '0'\n    option igmp_snooping '1'\n" >> /etc/config/network
 
 echo -e "config interface 'vpn'\n    option proto 'none'\n    option device 'br-vpn'\n" >> /etc/config/network
 check_status
