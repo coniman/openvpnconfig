@@ -32,23 +32,8 @@ EOF
 check_status
 echo -e "\033[32m- El archivo /etc/config/openvpn ha sido creado correctamente.\033[0m"
 
-# Eliminar la interfaz WAN (IPv4)
-uci delete network.wan
-check_status
-echo -e "\033[32m- La interfaz WAN (IPv4) ha sido eliminada correctamente.\033[0m"
-
-# Eliminar la interfaz WAN6 (IPv6)
-uci delete network.wan6
-check_status
-echo -e "\033[32m- La interfaz WAN6 (IPv6) ha sido eliminada correctamente.\033[0m"
-
-# Aplicar los cambios de eliminación con uci commit
-uci commit network
-check_status
-echo -e "\033[32m- Los cambios de red han sido aplicados correctamente.\033[0m"
-
 # Añadir la configuración del bridge y la interfaz vpn directamente al final del archivo /etc/config/network
-echo -e "\nconfig device\n    option type 'bridge'\n    option name 'br-vpn'\n    list ports 'eth0.2'\n    list ports 'tap0'\n    option ipv6 '0'\n    option igmp_snooping '1'\n" >> /etc/config/network
+echo -e "\nconfig device\n    option type 'bridge'\n    option name 'br-vpn'\n    list ports 'tap0'\n    option ipv6 '0'\n    option igmp_snooping '1'\n" >> /etc/config/network
 
 echo -e "config interface 'vpn'\n    option proto 'none'\n    option device 'br-vpn'\n" >> /etc/config/network
 check_status
